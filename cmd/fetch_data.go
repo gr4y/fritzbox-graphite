@@ -12,12 +12,12 @@ var CmdFetchData = func(c *cli.Context) {
 	router := c.String("router")
 	carbonHost := c.String("carbon-host")
 	carbonPort := c.String("carbon-port")
-	// interval := c.Int("interval")
+	interval := c.Duration("interval")
 	prefix := c.String("prefix")
 
 	carbonAddr := fmt.Sprintf("%s:%s", carbonHost, carbonPort)
 
-	for now := range time.Tick(10 * time.Second) {
+	for now := range time.Tick(interval) {
 		routerAddr := fmt.Sprintf("http://%s:49000/%s", router, "upnp/control/WANCommonIFC1")
 
 		var envelope = soap.Envelope{}

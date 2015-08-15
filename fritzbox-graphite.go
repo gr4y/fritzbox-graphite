@@ -4,6 +4,7 @@ import (
 	"github.com/codegangsta/cli"
 	"github.com/gr4y/fritzbox-graphite/cmd"
 	"os"
+	"time"
 )
 
 func main() {
@@ -25,6 +26,11 @@ func main() {
 			Name:  "carbon-port,cp",
 			Value: "2003",
 			Usage: "Carbon Port",
+		},
+		cli.DurationFlag{
+			Name:  "interval,i",
+			Value: 60 * time.Second,
+			Usage: "Interval",
 		},
 		cli.StringFlag{
 			Name:  "prefix",
