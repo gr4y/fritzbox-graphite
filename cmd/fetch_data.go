@@ -59,7 +59,6 @@ func sendMetrics(metrics map[string]int64, carbonAddr string, unixTime int64) {
 	checkError(err)
 	for key, value := range metrics {
 		metric := fmt.Sprintf("%s %d %d\n\r", key, value, unixTime)
-		fmt.Println(metric)
 		conn.Write([]byte(metric))
 	}
 	conn.Close()

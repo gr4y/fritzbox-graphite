@@ -48,8 +48,6 @@ func DoRequest(url string, action string) (Envelope, error) {
 			return envelope, err
 		}
 
-		fmt.Println(string(b.Bytes()))
-
 		client := &http.Client{}
 		req, err := http.NewRequest("POST", url, bytes.NewReader(b.Bytes()))
 		if err != nil {
