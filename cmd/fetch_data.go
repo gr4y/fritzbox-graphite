@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/codegangsta/cli"
 	"github.com/gr4y/fritzbox-graphite/soap"
+	"log"
 	"net"
 	"time"
 )
@@ -30,7 +31,8 @@ var CmdFetchData = func(c *cli.Context) {
 
 		metrics := getMetrics(&envelope, prefix)
 		if len(metrics) > 0 {
-			sendMetrics(metrics, carbonAddr, now.Unix())
+			err := sendMetrics(metrics, carbonAddr, now.Unix())
+			checkError(err)
 		}
 	}
 
@@ -54,14 +56,22 @@ func fetchStatusInfos(routerAddr string, envelope *soap.Envelope) {
 	envelope.Body.StatusInfos = env.Body.StatusInfos
 }
 
-func sendMetrics(metrics map[string]int64, carbonAddr string, unixTime int64) {
+func sendMetrics(metrics map[string]int64, carbonAddr string, unixTime int64) error {
+	// Connect
 	conn, err := net.Dial("tcp", carbonAddr)
-	checkError(err)
+	if err != nil {
+		return err
+	}
+	// Send Metrics
 	for key, value := range metrics {
 		metric := fmt.Sprintf("%s %d %d\n\r", key, value, unixTime)
-		conn.Write([]byte(metric))
+		_, err = conn.Write([]byte(metric))
+		if err != nil {
+			return err
+		}
 	}
-	conn.Close()
+	// Close Connection
+	return conn.Close()
 }
 
 func getMetrics(envelope *soap.Envelope, prefix string) map[string]int64 {
@@ -86,6 +96,11 @@ func getMetrics(envelope *soap.Envelope, prefix string) map[string]int64 {
 
 func checkError(err error) {
 	if err != nil {
+		defer func() {
+			if r := recover(); r != nil {
+				log.Println(r)
+			}
+		}()
 		panic(err)
 	}
 }
