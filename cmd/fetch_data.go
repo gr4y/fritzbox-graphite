@@ -3,7 +3,8 @@ package cmd
 import (
 	"fmt"
 	"github.com/codegangsta/cli"
-	"github.com/gr4y/fritzbox-graphite/soap"
+	"github.com/gr4y/fritzbox-graphite/lib"
+	"github.com/gr4y/fritzbox-graphite/lib/soap"
 	"log"
 	"net"
 	"time"
