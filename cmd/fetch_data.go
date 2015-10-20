@@ -11,28 +11,22 @@ import (
 )
 
 var CmdFetchData = func(c *cli.Context) {
-	router := c.String("router")
-	carbonHost := c.String("carbon-host")
-	carbonPort := c.String("carbon-port")
-	interval := c.Duration("interval")
-	prefix := c.String("prefix")
+	config := lib.Configuration{}
+	config.Load(c.String("config"))
 
-	carbonAddr := fmt.Sprintf("%s:%s", carbonHost, carbonPort)
-
-	for now := range time.Tick(interval) {
-		routerAddr := fmt.Sprintf("http://%s:49000/%s", router, "upnp/control/WANCommonIFC1")
+	for now := range time.Tick(config.Interval.Duration) {
 
 		var envelope = soap.Envelope{}
 		// fetch link properties
-		fetchLinkProperties(routerAddr, &envelope)
+		fetchLinkProperties(config.Router.GetAddress(), &envelope)
 		// fetch addon infos
-		fetchAddonInfos(routerAddr, &envelope)
+		fetchAddonInfos(config.Router.GetAddress(), &envelope)
 		// fetch status infos
-		fetchStatusInfos(routerAddr, &envelope)
+		fetchStatusInfos(config.Router.GetAddress(), &envelope)
 
-		metrics := getMetrics(&envelope, prefix)
+		metrics := getMetrics(&envelope, config.Prefix)
 		if len(metrics) > 0 {
-			err := sendMetrics(metrics, carbonAddr, now.Unix())
+			err := sendMetrics(metrics, config.Carbon.GetAddress(), now.Unix())
 			checkError(err)
 		}
 	}
@@ -40,19 +34,19 @@ var CmdFetchData = func(c *cli.Context) {
 }
 
 func fetchLinkProperties(routerAddr string, envelope *soap.Envelope) {
-	env, err := soap.DoRequest(routerAddr, "urn:schemas-upnp-org:service:WANCommonInterfaceConfig:1#GetCommonLinkProperties")
+	env, err := soap.DoRequest(routerAddr, "WANCommonIFC1", "urn:schemas-upnp-org:service:WANCommonInterfaceConfig:1#GetCommonLinkProperties")
 	checkError(err)
 	envelope.Body.LinkProperties = env.Body.LinkProperties
 }
 
 func fetchAddonInfos(routerAddr string, envelope *soap.Envelope) {
-	env, err := soap.DoRequest(routerAddr, "urn:schemas-upnp-org:service:WANCommonInterfaceConfig:1#GetAddonInfos")
+	env, err := soap.DoRequest(routerAddr, "WANCommonIFC1", "urn:schemas-upnp-org:service:WANCommonInterfaceConfig:1#GetAddonInfos")
 	checkError(err)
 	envelope.Body.AddonInfos = env.Body.AddonInfos
 }
 
 func fetchStatusInfos(routerAddr string, envelope *soap.Envelope) {
-	env, err := soap.DoRequest(routerAddr, "urn:schemas-upnp-org:service:WANIPConnection:1#GetStatusInfo")
+	env, err := soap.DoRequest(routerAddr, "WANCommonIFC1", "urn:schemas-upnp-org:service:WANIPConnection:1#GetStatusInfo")
 	checkError(err)
 	envelope.Body.StatusInfos = env.Body.StatusInfos
 }

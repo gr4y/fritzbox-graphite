@@ -17,16 +17,9 @@ type Env struct {
 	Action    string
 }
 
-const ENVELOPE = `<?xml version="1.0" encoding="UTF-8"?>
-  <s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"
-    xmlns:u="{{ .Namespace }}"
-    xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/">
-    <s:Body>
-      <u:{{ .Action }}/>
-    </s:Body>
-  </s:Envelope>`
+const ENVELOPE = `<?xml version="1.0" encoding="UTF-8"?><s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" xmlns:u="{{ .Namespace }}" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/"><s:Body><u:{{ .Action }}/></s:Body></s:Envelope>`
 
-func DoRequest(url string, action string) (Envelope, error) {
+func DoRequest(url string, subPath string, action string) (Envelope, error) {
 	params := strings.Split(action, "#")
 	var envelope Envelope
 
@@ -49,7 +42,7 @@ func DoRequest(url string, action string) (Envelope, error) {
 		}
 
 		client := &http.Client{}
-		req, err := http.NewRequest("POST", url, bytes.NewReader(b.Bytes()))
+		req, err := http.NewRequest("POST", fmt.Sprintf("%s/%s", url, subPath), bytes.NewReader(b.Bytes()))
 		if err != nil {
 			return envelope, err
 		}

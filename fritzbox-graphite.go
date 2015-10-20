@@ -4,7 +4,7 @@ import (
 	"github.com/codegangsta/cli"
 	"github.com/gr4y/fritzbox-graphite/cmd"
 	"os"
-	"time"
+	// "time"
 )
 
 func main() {
@@ -13,29 +13,9 @@ func main() {
 	a.Usage = "Sends Fritz!Box Traffic Data to Graphite"
 	a.Flags = []cli.Flag{
 		cli.StringFlag{
-			Name:  "router,r",
-			Value: "fritz.box",
-			Usage: "Fritz!Box Hostname or IP address",
-		},
-		cli.StringFlag{
-			Name:  "carbon-host,ch",
-			Value: "localhost",
-			Usage: "Carbon Hostname or IP address",
-		},
-		cli.StringFlag{
-			Name:  "carbon-port,cp",
-			Value: "2003",
-			Usage: "Carbon Port",
-		},
-		cli.DurationFlag{
-			Name:  "interval,i",
-			Value: 60 * time.Second,
-			Usage: "Interval",
-		},
-		cli.StringFlag{
-			Name:  "prefix",
-			Value: "metrics.routers.7170",
-			Usage: "Prefix",
+			Name:  "config,c",
+			Value: "/etc/fritzbox-graphite/settings.json",
+			Usage: "Path to JSON-Configuration file",
 		},
 	}
 	a.Action = cmd.CmdFetchData
