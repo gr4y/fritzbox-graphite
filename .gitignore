@@ -1,2 +1,4 @@
 Godeps/*
 !Godeps/Godeps.json
+
+settings.json

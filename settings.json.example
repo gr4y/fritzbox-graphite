@@ -1,0 +1,13 @@
+{
+  "carbon": {
+    "host": "myhostname",
+    "port": 2003
+  },
+  "router": {
+    "host": "fritz.box",
+    "port": 49000,
+    "basePath": "upnp/control" 
+  },
+  "interval": "1m0s",
+  "prefix": "metrics.routers.myhostname"
+}
