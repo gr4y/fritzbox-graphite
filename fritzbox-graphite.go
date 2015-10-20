@@ -11,6 +11,7 @@ func main() {
 	a := cli.NewApp()
 	a.Name = "fritzbox-graphite"
 	a.Usage = "Sends Fritz!Box Traffic Data to Graphite"
+	a.Version = "0.3.0-dev"
 	a.Flags = []cli.Flag{
 		cli.StringFlag{
 			Name:  "config,c",
