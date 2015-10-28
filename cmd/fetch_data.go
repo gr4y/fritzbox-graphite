@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/codegangsta/cli"
 	"github.com/gr4y/fritzbox-graphite/lib"
-	"github.com/gr4y/fritzbox-graphite/lib/soap"
+	"github.com/huin/goupnp/dcps/internetgateway2"
 	"log"
 	"net"
 	"time"
@@ -13,53 +13,71 @@ import (
 var CmdFetchData = func(c *cli.Context) {
 	config := lib.Configuration{}
 	config.Load(c.String("config"))
-
 	for now := range time.Tick(config.Interval.Duration) {
-
-		var envelope = soap.Envelope{}
-		// fetch link properties
-		fetchLinkProperties(config.Router.GetAddress(), &envelope)
-		// fetch addon infos
-		fetchAddonInfos(config.Router.GetAddress(), &envelope)
-		// fetch status infos
-		fetchStatusInfos(config.Router.GetAddress(), &envelope)
-
-		metrics := getMetrics(&envelope, config.Prefix)
-		if len(metrics) > 0 {
-			err := sendMetrics(metrics, config.Carbon.GetAddress(), now.Unix())
-			checkError(err)
-		}
+		timestamp := now.UTC().UnixNano()
+		sendMetrics(GetIPConnectionMetrics(), config, timestamp)
+		sendMetrics(GetCommonInterfaceConfigMetrics(), config, timestamp)
 	}
-
 }
 
-func fetchLinkProperties(routerAddr string, envelope *soap.Envelope) {
-	env, err := soap.DoRequest(routerAddr, "WANCommonIFC1", "urn:schemas-upnp-org:service:WANCommonInterfaceConfig:1#GetCommonLinkProperties")
+func GetCommonInterfaceConfigMetrics() map[string]uint32 {
+	var metrics map[string]uint32 = map[string]uint32{}
+	clients, _, err := lib.NewWANCommonInterfaceConfig1Clients()
 	checkError(err)
-	envelope.Body.LinkProperties = env.Body.LinkProperties
+	for _, c := range clients {
+		_, upstream, downstream, _, err := c.WANCommonInterfaceConfig1.GetCommonLinkProperties()
+		checkError(err)
+		metrics["max_bitrate.upstream"] = upstream
+		metrics["max_bitrate.downstream"] = downstream
+		packetsReceived, err := c.WANCommonInterfaceConfig1.GetTotalPacketsReceived()
+		checkError(err)
+		metrics["total_packets.received"] = packetsReceived
+		packetsSent, err := c.WANCommonInterfaceConfig1.GetTotalPacketsSent()
+		checkError(err)
+		metrics["total_packets.sent"] = packetsSent
+		// Addon Infos
+		NewByteSendRate, NewByteReceiveRate, NewPacketSendRate, NewPacketReceiveRate, NewTotalBytesSent, NewTotalBytesReceived,
+			NewAutoDisconnectTime, NewIdleDisconnectTime, _, _, _, _, _, _, err := c.GetAddonInfos()
+		checkError(err)
+		metrics["bytes_per_sec.received"] = NewByteReceiveRate
+		metrics["bytes_per_sec.sent"] = NewByteSendRate
+		metrics["packets_per_sec.received"] = NewPacketReceiveRate
+		metrics["packets_per_sec.sent"] = NewPacketSendRate
+		metrics["total_bytes.received"] = NewTotalBytesReceived
+		metrics["total_bytes.sent"] = NewTotalBytesSent
+		metrics["time.idle_disconnect"] = NewAutoDisconnectTime
+		metrics["time.auto_disconnect"] = NewIdleDisconnectTime
+	}
+	return metrics
 }
 
-func fetchAddonInfos(routerAddr string, envelope *soap.Envelope) {
-	env, err := soap.DoRequest(routerAddr, "WANCommonIFC1", "urn:schemas-upnp-org:service:WANCommonInterfaceConfig:1#GetAddonInfos")
+func GetIPConnectionMetrics() map[string]uint32 {
+	var metrics map[string]uint32 = map[string]uint32{}
+	clients, _, err := internetgateway2.NewWANIPConnection1Clients()
 	checkError(err)
-	envelope.Body.AddonInfos = env.Body.AddonInfos
+	for _, c := range clients {
+		_, _, uptime, err := c.GetStatusInfo()
+		checkError(err)
+		metrics["uptime"] = uptime
+		autoDisconnectTime, err := c.GetAutoDisconnectTime()
+		checkError(err)
+		metrics["time.auto_disconnect"] = autoDisconnectTime
+		idleDisconnectTime, err := c.GetIdleDisconnectTime()
+		checkError(err)
+		metrics["time.idle_disconnect"] = idleDisconnectTime
+	}
+	return metrics
 }
 
-func fetchStatusInfos(routerAddr string, envelope *soap.Envelope) {
-	env, err := soap.DoRequest(routerAddr, "WANCommonIFC1", "urn:schemas-upnp-org:service:WANIPConnection:1#GetStatusInfo")
-	checkError(err)
-	envelope.Body.StatusInfos = env.Body.StatusInfos
-}
-
-func sendMetrics(metrics map[string]int64, carbonAddr string, unixTime int64) error {
+func sendMetrics(metrics map[string]uint32, config lib.Configuration, unixTime int64) error {
 	// Connect
-	conn, err := net.Dial("tcp", carbonAddr)
+	conn, err := net.Dial("tcp", config.Carbon.GetAddress())
 	if err != nil {
 		return err
 	}
 	// Send Metrics
-	for key, value := range metrics {
-		metric := fmt.Sprintf("%s %d %d\n\r", key, value, unixTime)
+	for k, v := range metrics {
+		metric := fmt.Sprintf("%s.%s %d %d\n\r", config.Prefix, k, v, unixTime)
 		_, err = conn.Write([]byte(metric))
 		if err != nil {
 			return err
@@ -67,26 +85,6 @@ func sendMetrics(metrics map[string]int64, carbonAddr string, unixTime int64) er
 	}
 	// Close Connection
 	return conn.Close()
-}
-
-func getMetrics(envelope *soap.Envelope, prefix string) map[string]int64 {
-	metrics := map[string]int64{}
-	ai := envelope.Body.AddonInfos
-	lp := envelope.Body.LinkProperties
-	si := envelope.Body.StatusInfos
-	metrics[fmt.Sprintf("%s.bytes_per_sec.sent", prefix)] = ai.ByteSendRate
-	metrics[fmt.Sprintf("%s.bytes_per_sec.received", prefix)] = ai.ByteReceiveRate
-	metrics[fmt.Sprintf("%s.packet_per_sec.sent", prefix)] = ai.PacketSendRate
-	metrics[fmt.Sprintf("%s.packet_per_sec.received", prefix)] = ai.PacketReceiveRate
-	metrics[fmt.Sprintf("%s.total_bytes.sent", prefix)] = ai.TotalBytesSent
-	metrics[fmt.Sprintf("%s.total_bytes.received", prefix)] = ai.TotalBytesReceived
-	metrics[fmt.Sprintf("%s.time.auto_disconnect", prefix)] = ai.AutoDisconnectTime
-	metrics[fmt.Sprintf("%s.time.idle_disconnect", prefix)] = ai.IdleDisconnectTime
-	metrics[fmt.Sprintf("%s.max_bitrate.upstream", prefix)] = lp.UpstreamMaxBitRate
-	metrics[fmt.Sprintf("%s.max_bitrate.downstream", prefix)] = lp.DownstreamMaxBitRate
-	metrics[fmt.Sprintf("%s.uptime", prefix)] = si.Uptime
-
-	return metrics
 }
 
 func checkError(err error) {
