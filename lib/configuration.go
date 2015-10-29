@@ -49,9 +49,8 @@ func (c *CarbonConfiguration) GetAddress() string {
 }
 
 type RouterConfiguration struct {
-	Host     string
-	Port     int
-	BasePath string
+	Host string
+	Port int
 }
 
 func (r *RouterConfiguration) GetAddress() string {

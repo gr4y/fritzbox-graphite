@@ -5,8 +5,7 @@
   },
   "router": {
     "host": "fritz.box",
-    "port": 49000,
-    "basePath": "upnp/control" 
+    "port": 49000
   },
   "interval": "1m0s",
   "prefix": "metrics.routers.myhostname"
