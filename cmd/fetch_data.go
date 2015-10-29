@@ -14,10 +14,9 @@ var CmdFetchData = func(c *cli.Context) {
 	config := lib.Configuration{}
 	config.Load(c.String("config"))
 	for now := range time.Tick(config.Interval.Duration) {
-		timestamp := now.UTC().UnixNano()
-		err := sendMetrics(GetIPConnectionMetrics(), config, timestamp)
+		err := sendMetrics(GetIPConnectionMetrics(), config, now.UTC().Unix())
 		checkError(err)
-		err = sendMetrics(GetCommonInterfaceConfigMetrics(), config, timestamp)
+		err = sendMetrics(GetCommonInterfaceConfigMetrics(), config, now.UTC().Unix())
 		checkError(err)
 	}
 }
