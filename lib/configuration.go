@@ -54,5 +54,5 @@ type RouterConfiguration struct {
 }
 
 func (r *RouterConfiguration) GetAddress() string {
-	return fmt.Sprintf("http://%s:%d/%s", r.Host, r.Port, r.BasePath)
+	return fmt.Sprintf("http://%s:%d", r.Host, r.Port)
 }
