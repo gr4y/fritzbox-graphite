@@ -7,7 +7,7 @@
       image: plugins/docker
       settings:
         target: production
-        registry: hub.docker.com1
+        registry: docker.io
         repo: gr4y/fritzbox-graphite
         username: 
           from_secret: docker_username
