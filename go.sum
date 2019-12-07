@@ -1,0 +1,8 @@
+github.com/codegangsta/cli v1.8.1-0.20150812042259-142e6cd241a4 h1:nI9JR8ZKhE9YeHVOeCF7gdg6pYAXYTSon5V4P4+HPGo=
+github.com/codegangsta/cli v1.8.1-0.20150812042259-142e6cd241a4/go.mod h1:/qJNoX69yVSKu5o4jLyXAENLRyk1uhi7zkbQ3slBdOA=
+github.com/huin/goupnp v0.0.0-20150731070247-90f71cb5dd6d h1:C68kWFtlkoio7sKGV4/38IPRCLRMhvJw+RrK7cnlqB0=
+github.com/huin/goupnp v0.0.0-20150731070247-90f71cb5dd6d/go.mod h1:MZ2ZmwcBpvOoJ22IJsc7va19ZwoheaBk43rKg12SKag=
+golang.org/x/net v0.0.0-20151016005417-cd8c2701a5e1 h1:GWUnzn0KpcNoI4ZhpExQrdFgez6vIYSXqoPlgEE3ZUo=
+golang.org/x/net v0.0.0-20151016005417-cd8c2701a5e1/go.mod h1:mL1N/T3taQHkDXs73rZJwtUhF3w3ftmwwsq0BUmARs4=
+golang.org/x/text v0.0.0-20151015194400-f024ad8118c1 h1:8twVOpKgoFdijFkZktEWOFTrp1ezKInO9x82KVSwHB0=
+golang.org/x/text v0.0.0-20151015194400-f024ad8118c1/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=
