@@ -2,8 +2,9 @@
 kind: pipeline
 name: linux-amd64
 
-platform: amd64
-os: linux
+platform: 
+  arch: amd64
+  os: linux
 
 steps:
 - name: docker
@@ -38,8 +39,9 @@ steps:
 kind: pipeline
 name: linux-arm64
 
-platform: arm64
-os: linux
+platform: 
+  arch: arm64
+  os: linux
 
 steps:
 - name: docker
@@ -74,8 +76,9 @@ steps:
 kind: pipeline
 name: linux-arm
 
-platform: arm
-os: linux
+platform:
+  arch: arm
+  os: linux
 
 steps:
 - name: docker
