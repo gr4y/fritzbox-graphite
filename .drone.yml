@@ -1,31 +1,108 @@
 ---
-    kind: pipeline
-    name: default
+kind: pipeline
+name: linux-amd64
+
+platform: amd64
+os: linux
+
+steps:
+- name: docker
+    image: plugins/docker
+    settings:
+    target: production
+    registry: docker.io
+    repo: gr4y/fritzbox-graphite
+    username: 
+      from_secret: docker_username
+    password: 
+      from_secret: docker_password
+    tags: latest
+    environment: 
+      GOOS: linux
+      GOARCH: amd64
+- name: notification
+    image: plugins/pushover
+    settings: 
+    message: "{{ repo.owner }}/{{ repo.name }}#{{ truncate build.commit 8 }} ({{ build.branch }}) by {{ build.author }} - {{ build.message }}"
+    token:
+        from_secret: pushover_token
+    user:
+        from_secret: pushover_user
+    failure: ignore
+    when:
+    status:
+    - success
+    - failure
     
-    steps:
-    - name: docker
-      image: plugins/docker
-      settings:
-        target: production
-        registry: docker.io
-        repo: gr4y/fritzbox-graphite
-        username: 
-          from_secret: docker_username
-        password: 
-          from_secret: docker_password
-        tags: latest
-    - name: notification
-      image: plugins/pushover
-      settings: 
-        message: "{{ repo.owner }}/{{ repo.name }}#{{ truncate build.commit 8 }} ({{ build.branch }}) by {{ build.author }} - {{ build.message }}"
-        token:
-          from_secret: pushover_token
-        user:
-          from_secret: pushover_user
-      failure: ignore
-      when:
-        status:
-        - success
-        - failure
-        
-    
+---
+kind: pipeline
+name: linux-arm64
+
+platform: arm64
+os: linux
+
+steps:
+- name: docker
+    image: plugins/docker
+    settings:
+    target: production
+    registry: docker.io
+    repo: gr4y/fritzbox-graphite
+    username: 
+        from_secret: docker_username
+    password: 
+        from_secret: docker_password
+    tags: latest
+    environment: 
+        GOOS: linux
+        GOARCH: arm64
+- name: notification
+    image: plugins/pushover
+    settings: 
+    message: "{{ repo.owner }}/{{ repo.name }}#{{ truncate build.commit 8 }} ({{ build.branch }}) by {{ build.author }} - {{ build.message }}"
+    token:
+        from_secret: pushover_token
+    user:
+        from_secret: pushover_user
+    failure: ignore
+    when:
+    status:
+    - success
+    - failure
+
+---
+kind: pipeline
+name: linux-arm
+
+platform: arm
+os: linux
+
+steps:
+- name: docker
+    image: plugins/docker
+    settings:
+    target: production
+    registry: docker.io
+    repo: gr4y/fritzbox-graphite
+    username: 
+        from_secret: docker_username
+    password: 
+        from_secret: docker_password
+    tags: latest
+    environment: 
+        GOOS: linux
+        GOARCH: arm
+- name: notification
+    image: plugins/pushover
+    settings: 
+    message: "{{ repo.owner }}/{{ repo.name }}#{{ truncate build.commit 8 }} ({{ build.branch }}) by {{ build.author }} - {{ build.message }}"
+    token:
+        from_secret: pushover_token
+    user:
+        from_secret: pushover_user
+    failure: ignore
+    when:
+    status:
+    - success
+    - failure
+
