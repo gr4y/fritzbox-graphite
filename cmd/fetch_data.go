@@ -2,9 +2,9 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/urfave/cli"
 	"github.com/gr4y/fritzbox-graphite/lib"
 	"github.com/huin/goupnp/dcps/internetgateway2"
+	"github.com/urfave/cli"
 	"log"
 	"net"
 	"time"
