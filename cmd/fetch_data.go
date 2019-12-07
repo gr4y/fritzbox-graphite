@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/codegangsta/cli"
+	"github.com/urfave/cli"
 	"github.com/gr4y/fritzbox-graphite/lib"
 	"github.com/huin/goupnp/dcps/internetgateway2"
 	"log"

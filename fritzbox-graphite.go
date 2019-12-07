@@ -1,9 +1,10 @@
 package main
 
 import (
-	"github.com/codegangsta/cli"
-	"github.com/gr4y/fritzbox-graphite/cmd"
 	"os"
+
+	"github.com/gr4y/fritzbox-graphite/cmd"
+	"github.com/urfave/cli"
 	// "time"
 )
 
@@ -11,7 +12,7 @@ func main() {
 	a := cli.NewApp()
 	a.Name = "fritzbox-graphite"
 	a.Usage = "Sends Fritz!Box Traffic Data to Graphite"
-	a.Version = "0.3.0-dev"
+	a.Version = "0.4.0"
 	a.Flags = []cli.Flag{
 		cli.StringFlag{
 			Name:  "config,c",
