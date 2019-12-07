@@ -7,8 +7,8 @@ os: linux
 
 steps:
 - name: docker
-    image: plugins/docker
-    settings:
+  image: plugins/docker
+  settings:
     target: production
     registry: docker.io
     repo: gr4y/fritzbox-graphite
@@ -21,8 +21,8 @@ steps:
       GOOS: linux
       GOARCH: amd64
 - name: notification
-    image: plugins/pushover
-    settings: 
+  image: plugins/pushover
+  settings: 
     message: "{{ repo.owner }}/{{ repo.name }}#{{ truncate build.commit 8 }} ({{ build.branch }}) by {{ build.author }} - {{ build.message }}"
     token:
         from_secret: pushover_token
@@ -43,8 +43,8 @@ os: linux
 
 steps:
 - name: docker
-    image: plugins/docker
-    settings:
+  image: plugins/docker
+  settings:
     target: production
     registry: docker.io
     repo: gr4y/fritzbox-graphite
@@ -57,8 +57,8 @@ steps:
         GOOS: linux
         GOARCH: arm64
 - name: notification
-    image: plugins/pushover
-    settings: 
+  image: plugins/pushover
+  settings: 
     message: "{{ repo.owner }}/{{ repo.name }}#{{ truncate build.commit 8 }} ({{ build.branch }}) by {{ build.author }} - {{ build.message }}"
     token:
         from_secret: pushover_token
@@ -79,8 +79,8 @@ os: linux
 
 steps:
 - name: docker
-    image: plugins/docker
-    settings:
+  image: plugins/docker
+  settings:
     target: production
     registry: docker.io
     repo: gr4y/fritzbox-graphite
@@ -93,8 +93,8 @@ steps:
         GOOS: linux
         GOARCH: arm
 - name: notification
-    image: plugins/pushover
-    settings: 
+  image: plugins/pushover
+  settings: 
     message: "{{ repo.owner }}/{{ repo.name }}#{{ truncate build.commit 8 }} ({{ build.branch }}) by {{ build.author }} - {{ build.message }}"
     token:
         from_secret: pushover_token
