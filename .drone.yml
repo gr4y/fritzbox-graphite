@@ -40,6 +40,15 @@ steps:
   settings:
     group: release
 
+- name: build-check
+  image: golang:buster
+  pull: always
+  environment:
+    CGO_ENABLED: 0
+    GOPATH: /srv/app
+  commands:
+  - make release-copy release-check
+
 - name: notification
   image: plugins/pushover
   settings:
