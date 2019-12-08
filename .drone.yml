@@ -7,46 +7,49 @@ workspace:
   path: src/github.com/gr4y/fritzbox-graphite
 
 steps:
-  - name: build-linux
-    image: karalabe/xgo-latest:latest
-    pull: true
-    environment:
-      CGO_ENABLED: 0
-      GOPATH: /app
-    commands: 
-      - make release-dirs release-linux
-    settings:
-      group: release
-  - name: build-windows
-    image: karalabe/xgo-latest:latest
-    pull: true
-    environment:
-      CGO_ENABLED: 0
-      GOPATH: /app
-    commands: 
-      - make release-dirs release-windows
-    settings:
-      group: release
-  - name: build-darwin
-    image: karalabe/xgo-latest:latest
-    pull: true
-    environment:
-      CGO_ENABLED: 0
-      GOPATH: /app
-    commands:
-      - make release-dirs release-darwin
-    settings:
-      group: release
+- name: build-linux
+  image: karalabe/xgo-latest:latest
+  pull: true
+  environment:
+    CGO_ENABLED: 0
+    GOPATH: /app
+  commands: 
+  - make release-dirs release-linux
+  settings:
+    group: release
+
+- name: build-windows
+  image: karalabe/xgo-latest:latest
+  pull: true
+  environment:
+    CGO_ENABLED: 0
+    GOPATH: /app
+  commands: 
+  - make release-dirs release-windows
+  settings:
+    group: release
+
+- name: build-darwin
+  image: karalabe/xgo-latest:latest
+  pull: true
+  environment:
+    CGO_ENABLED: 0
+    GOPATH: /app
+  commands:
+  - make release-dirs release-darwin
+  settings:
+    group: release
+
 - name: notification
-    image: plugins/pushover
-    settings:
-      message: "{{ repo.owner }}/{{ repo.name }}#{{ truncate build.commit 8 }} ({{ build.branch }}) by {{ build.author }} - {{ build.message }}"
-      token:
-        from_secret: pushover_token
-      user:
-        from_secret: pushover_user
-      failure: ignore
-      when:
-        status:
-          - success
-          - failure
+  image: plugins/pushover
+  settings:
+    message: "{{ repo.owner }}/{{ repo.name }}#{{ truncate build.commit 8 }} ({{ build.branch }}) by {{ build.author }} - {{ build.message }}"
+    token:
+      from_secret: pushover_token
+    user:
+      from_secret: pushover_user
+    failure: ignore
+    when:
+      status:
+        - success
+        - failure
