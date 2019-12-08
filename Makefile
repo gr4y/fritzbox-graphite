@@ -39,7 +39,7 @@ release-windows:
 	fi
 	xgo -dest $(DIST)/binaries -tags 'netgo $(TAGS)' -ldflags '-linkmode external -extldflags "-static" $(LDFLAGS)' -targets 'windows/*' -out fritzbox-graphite_$(VERSION) .
 
-release-osx:
+release-darwin:
 	@hash xgo > /dev/null 2>&1; if [ $$? -ne 0 ]; then \
 		$(GO) get -u github.com/karalabe/xgo; \
 	fi
