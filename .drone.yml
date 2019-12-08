@@ -1,7 +1,12 @@
 ---
+workspace:
+  base: /app
+  path: src/github.com/gr4y/fritzbox-graphite
+
+branches:
+  - master
+
 kind: pipeline
-type: docker
-name: build
 
 steps:
   - name: build-linux
@@ -12,7 +17,8 @@ steps:
       - CGO_ENABLED=0
       - GOPATH=/app
       - TAGS=
-    command: make release-dirs release-linux
+    commands: 
+      - make release-dirs release-linux
   - name: build-windows
     image: karalabe/xgo-latest:latest
     pull: true
@@ -21,8 +27,19 @@ steps:
       - CGO_ENABLED=0
       - GOPATH=/app
       - TAGS=
-    command: make release-dirs release-windows
-  - name: notification
+    commands: 
+      - make release-dirs release-windows
+  - name: build-darwin
+    image: karalabe/xgo-latest:latest
+    pull: true
+    group: release
+    environment:
+      - CGO_ENABLED=0
+      - GOPATH=/app
+      - TAGS=
+    commands: 
+      - make release-dirs release-darwin
+- name: notification
     image: plugins/pushover
     settings:
       message: "{{ repo.owner }}/{{ repo.name }}#{{ truncate build.commit 8 }} ({{ build.branch }}) by {{ build.author }} - {{ build.message }}"
