@@ -9,7 +9,7 @@ workspace:
 steps:
 - name: build-linux
   image: karalabe/xgo-latest:latest
-  pull: true
+  pull: always
   environment:
     CGO_ENABLED: 0
     GOPATH: /app
@@ -20,7 +20,7 @@ steps:
 
 - name: build-windows
   image: karalabe/xgo-latest:latest
-  pull: true
+  pull: always
   environment:
     CGO_ENABLED: 0
     GOPATH: /app
@@ -31,7 +31,7 @@ steps:
 
 - name: build-darwin
   image: karalabe/xgo-latest:latest
-  pull: true
+  pull: always
   environment:
     CGO_ENABLED: 0
     GOPATH: /app
