@@ -1,44 +1,42 @@
 ---
+kind: pipeline
+name: build
+
 workspace:
   base: /app
   path: src/github.com/gr4y/fritzbox-graphite
-
-branches:
-  - master
-
-kind: pipeline
 
 steps:
   - name: build-linux
     image: karalabe/xgo-latest:latest
     pull: true
-    group: release
     environment:
-      - CGO_ENABLED=0
-      - GOPATH=/app
-      - TAGS=
+      - CGO_ENABLED: 0
+      - GOPATH: /app
     commands: 
       - make release-dirs release-linux
+    settings:
+      group: release
   - name: build-windows
     image: karalabe/xgo-latest:latest
     pull: true
-    group: release
     environment:
-      - CGO_ENABLED=0
-      - GOPATH=/app
-      - TAGS=
+      - CGO_ENABLED: 0
+      - GOPATH: /app
     commands: 
       - make release-dirs release-windows
+    settings:
+      group: release
   - name: build-darwin
     image: karalabe/xgo-latest:latest
     pull: true
-    group: release
     environment:
-      - CGO_ENABLED=0
-      - GOPATH=/app
-      - TAGS=
-    commands: 
+      - CGO_ENABLED: 0
+      - GOPATH: /app
+    commands:
       - make release-dirs release-darwin
+    settings:
+      group: release
 - name: notification
     image: plugins/pushover
     settings:
