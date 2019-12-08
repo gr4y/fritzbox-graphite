@@ -49,6 +49,58 @@ steps:
   commands:
   - make release-copy release-check
 
+- name: docker-amd64
+  pull: always
+  image: plugins/docker
+  settings:
+    username:
+      from_secret: docker_username
+    password:
+      from_secret: docker_password
+    auto_tag: true
+    auto_tag_suffix: linux-amd64
+    dockerfile: docker/Dockerfile.linux.amd64
+    repo: gr4y/fritzbox-graphite
+
+- name: docker-arm64v8
+  pull: always
+  image: plugins/docker
+  settings:
+    username:
+      from_secret: docker_username
+    password:
+      from_secret: docker_password
+    auto_tag: true
+    auto_tag_suffix: linux-arm64v8
+    dockerfile: docker/Dockerfile.linux.arm64v8
+    repo: gr4y/fritzbox-graphite
+
+- name: docker-arm32v7
+  pull: always
+  image: plugins/docker
+  settings:
+    username:
+      from_secret: docker_username
+    password:
+      from_secret: docker_password
+    auto_tag: true
+    auto_tag_suffix: linux-arm32v7
+    dockerfile: docker/Dockerfile.linux.arm32v7
+    repo: gr4y/fritzbox-graphite
+
+- name: docker-arm32v6
+  pull: always
+  image: plugins/docker
+  settings:
+    username:
+      from_secret: docker_username
+    password:
+      from_secret: docker_password
+    auto_tag: true
+    auto_tag_suffix: linux-arm32v6
+    dockerfile: docker/Dockerfile.linux.arm32v6
+    repo: gr4y/fritzbox-graphite
+
 - name: notification
   image: plugins/pushover
   settings:
