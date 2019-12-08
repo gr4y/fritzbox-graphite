@@ -1,6 +1,6 @@
 # Build Stage
 FROM debian:buster as build
-RUN apt-get install ca-certificates
+RUN apt-get update && apt-get install ca-certificates
 WORKDIR /app
 
 # Final Stage
