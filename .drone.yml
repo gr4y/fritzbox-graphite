@@ -11,8 +11,8 @@ steps:
     image: karalabe/xgo-latest:latest
     pull: true
     environment:
-      - CGO_ENABLED: 0
-      - GOPATH: /app
+      CGO_ENABLED: 0
+      GOPATH: /app
     commands: 
       - make release-dirs release-linux
     settings:
@@ -21,8 +21,8 @@ steps:
     image: karalabe/xgo-latest:latest
     pull: true
     environment:
-      - CGO_ENABLED: 0
-      - GOPATH: /app
+      CGO_ENABLED: 0
+      GOPATH: /app
     commands: 
       - make release-dirs release-windows
     settings:
@@ -31,8 +31,8 @@ steps:
     image: karalabe/xgo-latest:latest
     pull: true
     environment:
-      - CGO_ENABLED: 0
-      - GOPATH: /app
+      CGO_ENABLED: 0
+      GOPATH: /app
     commands:
       - make release-dirs release-darwin
     settings:
