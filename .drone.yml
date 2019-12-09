@@ -48,7 +48,7 @@ steps:
   pull: always
   environment:
     CGO_ENABLED: 0
-    GOPATH: /srv/app
+    GOPATH: /app
   commands:
   - make release-copy release-check
 
