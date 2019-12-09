@@ -6,8 +6,8 @@ WORKDIR /app
 # Final Stage
 FROM scratch
 
+COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs
+COPY --from=build /app/dist/binaries/fritzbox-graphite-linux-arm-6 /app/fritzbox-graphite
+
 ENTRYPOINT ["/app/fritzbox-graphite"]
 CMD ["-c /app/fritzbox-graphite.json"]
-
-COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs
-COPY --from=build dist/binaries/fritzbox-graphite-*-linux-armv6 /app/fritzbox-graphite
