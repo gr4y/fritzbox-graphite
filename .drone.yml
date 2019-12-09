@@ -55,6 +55,7 @@ steps:
 - name: docker-amd64
   pull: always
   image: plugins/docker
+  depends_on: build-linux
   settings:
     username:
       from_secret: docker_username
@@ -68,6 +69,7 @@ steps:
 - name: docker-arm64v8
   pull: always
   image: plugins/docker
+  depends_on: build-linux
   settings:
     username:
       from_secret: docker_username
@@ -81,6 +83,7 @@ steps:
 - name: docker-arm32v7
   pull: always
   image: plugins/docker
+  depends_on: build-linux
   settings:
     username:
       from_secret: docker_username
@@ -94,6 +97,7 @@ steps:
 - name: docker-arm32v6
   pull: always
   image: plugins/docker
+  depends_on: build-linux
   settings:
     username:
       from_secret: docker_username
