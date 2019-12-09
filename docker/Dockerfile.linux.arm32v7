@@ -10,4 +10,4 @@ ENTRYPOINT ["/app/fritzbox-graphite"]
 CMD ["-c /app/fritzbox-graphite.json"]
 
 COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs
-COPY dist/binaries/fritzbox-graphite-*-linux-armv7 /app/fritzbox-graphite
+COPY --from=build dist/binaries/fritzbox-graphite-*-linux-armv7 /app/fritzbox-graphite
